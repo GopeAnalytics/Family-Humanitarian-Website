@@ -248,10 +248,10 @@
 
 <script>
     const storedUsers = {
-        Kelvine: { pin: "1920" },
-        Titus: { pin: "7956" },
+        Kelvine: { pin: "1998" },
+        Joel: { pin: "7956" },
         Michaela: { pin: "8725" },
-        TR1: { pin: "4561" }
+        TR1: { pin: "4567" }
     };
 
     const signInBtn = document.getElementById('sign-in-btn');
@@ -262,11 +262,11 @@
         const pin = document.getElementById('sign-in-pin').value;
 
         if (storedUsers[name] && storedUsers[name].pin === pin) {
-            // Redirect to the home page without showing any message
+            // Redirect to the home page
             sessionStorage.setItem('currentUser', name); // Save the current user's name
             window.location.href = "home.html"; // Redirect to home.html
         } else {
-            document.getElementById('sign-in-message').textContent = "Invalid name or PIN.";
+            document.getElementById('sign-in-message').textContent = "Invalid PIN.";
         }
     });
 
