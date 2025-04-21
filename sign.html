@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In & Sign Up</title>
+    <link rel="stylesheet" href="sign-styles.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <a href="#" class="logo">
+        <img src="logo.png" alt="FH260 Logo" />
+      </a>
+    </header>
+
+    <main class="auth-container">
+      <div class="form-box" id="sign-in">
+        <h2>Sign In</h2>
+        <label for="sign-in-name"> Email:</label>
+        <input type="text" id="sign-in-name" placeholder="Enter your  email" />
+
+        <label for="sign-in-pin">4-Digit PIN:</label>
+        <input
+          type="password"
+          id="sign-in-pin"
+          maxlength="4"
+          placeholder="Enter PIN"
+        />
+
+        <button id="sign-in-btn">Sign In</button>
+        <p class="message" id="sign-in-message"></p>
+      </div>
+
+      <div class="form-box" id="change-pin" style="display: none">
+        <h2>Change PIN</h2>
+        <label for="new-pin">Enter New PIN:</label>
+        <input type="password" id="new-pin" maxlength="4" />
+
+        <label for="confirm-new-pin">Confirm New PIN:</label>
+        <input type="password" id="confirm-new-pin" maxlength="4" />
+
+        <button id="change-pin-btn">Change PIN</button>
+        <p class="message" id="change-pin-message"></p>
+      </div>
+    </main>
+
+    <footer class="main-footer">
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <p>
+        <a href="sign.html">Sign In</a> | <a href="index.html">Home</a> |
+        <a href="sign.html">Sign Up</a>
+      </p>
+    </footer>
+    <script src="sign-script.js"></script>
+  </body>
+</html>

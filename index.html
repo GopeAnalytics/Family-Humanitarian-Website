@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fh260</title>
+    <style>
+      /* Reset and general styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        background-color: #ada8a8;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      /* Header Section */
+      header {
+        background-color: #003366; /* KCAU's branding color */
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      header .logo img {
+        height: 40px;
+      }
+
+      header nav ul {
+        display: flex;
+        list-style: none;
+        gap: 20px;
+      }
+
+      header nav ul li a {
+        color: white;
+        font-weight: bold;
+        padding: 10px;
+        transition: background-color 0.3s ease;
+      }
+
+      header nav ul li a:hover {
+        background-color: #004080;
+        border-radius: 5px;
+      }
+
+      /* Hero Section */
+      .hero {
+        background: url("hero-image.jpg") no-repeat center center/cover;
+        padding: 80px 20px;
+        text-align: center;
+        color: white;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+      }
+
+      .hero p {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+
+      .hero .cta {
+        padding: 12px 20px;
+        background-color: #ff6600;
+        color: white;
+        font-size: 1.2rem;
+        border-radius: 5px;
+      }
+
+      .hero .cta:hover {
+        background-color: #cc5200;
+      }
+
+      /* Featured Programs Section */
+      .featured-programs {
+        padding: 40px 20px;
+        background-color: #f9f9f9; /* Optional: Light background for the section */
+        text-align: center;
+      }
+
+      .featured-programs h2 {
+        font-size: 2.5rem;
+        color: #004080;
+        margin-bottom: 30px;
+      }
+
+      /* Grid container to display boxes */
+      .programs-container {
+        display: grid;
+        grid-template-columns: 1fr; /* One program per row */
+        gap: 30px; /* Space between each program box */
+      }
+
+      /* Styling individual program boxes */
+      .program {
+        background-color: white;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for separation */
+        text-align: left;
+        max-width: 500px; /* Optional: Set a max width */
+        margin: 0 auto; /* Center the boxes horizontally */
+      }
+
+      .program h3 {
+        font-size: 1.8rem;
+        color: #004080;
+        margin-bottom: 10px;
+      }
+      .program h3 {
+        font-size: 1.8rem;
+        color: #004080;
+        margin-bottom: 10px;
+        text-align: center; /* Center-aligns the heading */
+      }
+
+      .program p {
+        font-size: 1rem;
+        color: #333;
+        line-height: 1.5;
+      }
+
+      .main-footer {
+        background-color: #003366; /* Dark blue background */
+        color: white; /* White text color */
+        text-align: center; /* Center align text */
+        padding: 20px 10px; /* Add padding for spacing */
+        font-size: 0.9rem; /* Adjust font size for readability */
+        margin-top: 30px; /* Add space above footer */
+      }
+
+      .main-footer a {
+        color: #ffcc00; /* Bright yellow link color for contrast */
+        text-decoration: none; /* Remove underline from links */
+        font-weight: bold; /* Make links bold */
+        margin: 0 5px; /* Add space between links */
+      }
+
+      .main-footer a:hover {
+        text-decoration: underline; /* Add underline on hover */
+        color: #ffd700; /* Slightly brighter yellow on hover */
+      }
+
+      .main-footer p {
+        margin: 10px 0; /* Add spacing between paragraphs */
+      }
+
+      .main-footer p a {
+        display: inline-block; /* Inline-block for better spacing */
+      }
+
+      header {
+        flex-direction: column; /* Stack logo and navigation */
+        align-items: center;
+        text-align: center;
+      }
+      .calculator-box {
+        background-color: orange;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .calculator-box h1 {
+        text-align: center;
+      }
+
+      .carousel-container {
+        position: relative;
+        margin-top: 20px;
+        overflow: hidden;
+        height: 200px;
+      }
+
+      .carousel-item {
+        display: none;
+        text-align: center;
+        padding: 20px;
+        background-color: #ffcc66;
+        border-radius: 10px;
+        color: black;
+      }
+
+      .carousel-item.active {
+        display: block;
+        animation: fade-in 1s;
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header>
+      <div class="logo">
+        <img src="logo.png" alt="KCAU Logo" />
+      </div>
+      <nav>
+        <ul></ul>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Welcome to fh260</h1>
+      <p>We start counting from here</p>
+      <!-- Sign In Now Button updated to link to sign.html -->
+      <a href="sign.html" class="cta">Sign In Now</a>
+
+      <!-- If you're using an inline JavaScript method for showing the sign-in form -->
+      <a href="#sign-in" onclick="showSignInForm()"></a>
+    </section>
+
+    <!-- Featured Programs Section -->
+    <section class="featured-programs">
+      <h2>Our Programs</h2>
+      <div class="programs-container">
+        <div class="program">
+          <h3>Chain</h3>
+          <p>To help adjust to electronic system than manual.</p>
+        </div>
+        <div class="program">
+          <h3>IT</h3>
+          <p>Making work more easier each day in the world of technology.</p>
+        </div>
+        <div class="program">
+          <h3>Accounting</h3>
+          <p>
+            Prepare and display fund requests and approval for easy
+            accountability and transparency.
+          </p>
+        </div>
+      </div>
+    </section>
+    <div class="calculator-box">
+      <h1>Time Zone</h1>
+      <p>Your Country: <span id="country"></span></p>
+      <div class="carousel-container" id="carousel">
+        <!-- Dynamic state time info will be displayed here -->
+      </div>
+    </div>
+
+    <script>
+      const states = [
+        { name: "Texas", timeZone: "America/Chicago" },
+        { name: "Kisumu", timeZone: "Africa/Nairobi" },
+        { name: "Utah", timeZone: "America/Denver" },
+        { name: "Idaho", timeZone: "America/Denver" },
+        { name: "Mbale", timeZone: "Africa/Kampala" },
+        { name: "Accra", timeZone: "Africa/Accra" },
+      ];
+      let currentIndex = 0;
+
+      async function detectCountry() {
+        try {
+          const response = await fetch("https://ipapi.co/json/");
+          const data = await response.json();
+          return data.country_name || "Unknown";
+        } catch (error) {
+          console.error("Error fetching country:", error);
+          return "Unknown";
+        }
+      }
+
+      function calculateTimeDifference(localTimeZone, targetTimeZone) {
+        const now = new Date();
+        const localTime = now.toLocaleString("en-US", {
+          timeZone: localTimeZone,
+        });
+        const targetTime = now.toLocaleString("en-US", {
+          timeZone: targetTimeZone,
+        });
+
+        const localDate = new Date(localTime);
+        const targetDate = new Date(targetTime);
+
+        // Calculate the time difference in hours
+        const timeDifference = (targetDate - localDate) / (1000 * 60 * 60);
+        return timeDifference;
+      }
+
+      function updateTimeCarousel() {
+        const now = new Date();
+        const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const carousel = document.getElementById("carousel");
+        carousel.innerHTML = "";
+
+        states.forEach((state, index) => {
+          const stateTime = new Intl.DateTimeFormat("en-US", {
+            timeZone: state.timeZone,
+            timeStyle: "medium",
+            dateStyle: "short",
+          }).format(now);
+
+          const timeDifference = calculateTimeDifference(
+            localTimeZone,
+            state.timeZone
+          );
+
+          const item = document.createElement("div");
+          item.className = "carousel-item";
+          if (index === currentIndex) {
+            item.classList.add("active");
+          }
+
+          item.innerHTML = `
+                <h2>${state.name}</h2>
+                <p><strong>State Time:</strong> ${stateTime}</p>
+                <p><strong>Time Difference:</strong> ${Math.abs(
+                  timeDifference
+                )} hours (${timeDifference > 0 ? "ahead" : "behind"})</p>
+            `;
+
+          carousel.appendChild(item);
+        });
+
+        currentIndex = (currentIndex + 1) % states.length;
+      }
+
+      async function init() {
+        const country = await detectCountry();
+        document.getElementById("country").textContent = country;
+
+        updateTimeCarousel();
+        setInterval(updateTimeCarousel, 3000); // Swap every 3 seconds
+      }
+
+      init();
+    </script>
+
+    <!-- Footer -->
+
+    <footer class="main-footer">
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <p>
+        <a href="sign.html">Sign In</a> | <a href="index.html">Back Page</a> |
+        <a href="sign.html">Sign Up</a>
+      </p>
+    </footer>
+
+    <script>
+      // Function to handle user logout
+      function logoutUser() {
+        // Clear user session or data (example for localStorage)
+        localStorage.clear(); // Adjust based on your storage method (session, cookies, etc.)
+
+        // Redirect to a login or home page
+        alert("You have successfully logged out.");
+        window.location.href = "sign.html"; // Redirect to the sign-in page
+      }
+    </script>
+  </body>
+</html>

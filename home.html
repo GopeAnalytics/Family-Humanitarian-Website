@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>fh260 - Online Request</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body><body>
+  <header>
+      <h1>fh260</h1>
+      <p>This portal will help you Request, Upload and Reconcile funds being sent to you.</p>
+  </header>
+      <!-- Navigation Bar -->
+      <div class="top-nav">
+        <div class="log"></div>
+        <nav>
+          <a href="home.html">Home</a>
+          <a href="apply.html">Apply</a>
+          <a href="receipts.html">Receipts</a>
+         
+        </nav>
+      </div>
+  </div>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Fund Request Platform</h1>
+    <p> Apply for funds using the button below.</p>
+    <a href="apply.html" class="cta-btn">Request Funds</a>
+  </section>
+  <!-- Features Section -->
+  <section class="features">
+    <div class="feature">
+      <h3>Expense Account</h3>
+<p>This helps show you how much money flows on your account.</p>
+<div class="container">
+    <label for="nameSelect">Select a Name:</label>
+    <select id="nameSelect" onchange="updateData()" style="margin-bottom: 20px;">
+        <option value="">-- Select a Name --</option>
+        <option value="Titus">Titus</option>
+        <option value="Kelvine">Kelvine</option>
+       
+    </select>
+
+    <div class="feature">
+        <h3>Expenditure Amount</h3>
+        <p>This is the figure approved in the expenditure data.</p>
+        <div id="expenditureOutput" style="color: blue; font-weight: bold;"></div>
+    </div>
+
+    <div class="feature">
+        <h3>Receipts Amount</h3>
+        <p>This is the figure reconciled in the receipts.</p>
+        <div id="receiptsOutput" style="color: blue; font-weight: bold;"></div>
+    </div>
+
+    <div class="feature">
+        <h3>Balance Amount</h3>
+        <p>Money left at hand.</p>
+        <div id="balanceOutput" style="color: blue; font-weight: bold;"></div>
+    </div>
+</div>
+      </body>
+      </html>
+    </div>
+    <div class="feature forex-calculator">
+      <h3>Forex Calculator</h3>
+      <div class="calculator-container">
+        <div class="currency">
+          <img src="usa.webp" alt="USA Flag" id="fromFlag" class="flag">
+          <select id="fromCurrency">
+            <option value="USD" data-flag="usa.webp">USD</option>
+            <option value="EUR" data-flag="euro.webp">EUR</option>
+            <option value="GBP" data-flag="gbp.webp">GBP</option>
+          </select>
+        </div>
+        <div class="conversion-arrow">⇄</div>
+        <div class="currency">
+          <img src="ksh.webp" alt="Kenya Flag" id="toFlag" class="flag">
+          <select id="toCurrency">
+            <option value="KES" data-flag="ksh.webp">KES</option>
+            <option value="UGX" data-flag="ugx.jpg">UGX</option>
+            <option value="GHS" data-flag="ghx.jpg">GHS</option>
+          </select>
+        </p>
+      <p class="rates">
+        To Buy 1 <span id="selectedFromCurrency">USD</span>: 
+        <span id="buyRate">125.25</span>
+        <br>
+        To Sell 1 <span id="selectedFromCurrency2">USD</span>: 
+        <span id="sellRate">131.25</span>
+      </p>
+    </div>
+  </section>
+<!-- Buttons container -->
+<div class="button-container">
+  <!-- Track Button -->
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSf3mzAT24yKnijPuw9rf1ThODw9NFmbjFiBPLL8a0MqjwIczg/viewform" 
+     class="btn btn-track" 
+     target="_blank">Track</a>
+  <!-- Funds Button -->
+  <a href="https://feji.us/ufkfh1" 
+     class="btn btn-funds" 
+     target="_blank">Funds</a>
+</div>
+ <!-- Footer -->
+<footer>
+  <p>&copy; 2025 Fh260. All rights reserved.</p>
+  <p>
+    <a href="sign.html">Sign In</a> | 
+    <a href="index.html">Back Page</a> | 
+    <a href="#" onclick="logoutUser()">Log Out</a>
+  </p>
+</footer>
+   <script src="script.js"></script>
+</body>
+</html>

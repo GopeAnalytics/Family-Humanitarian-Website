@@ -1,0 +1,367 @@
+/* General styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+header {
+  background-color: #003366; /* KCAU's branding color */
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header .logo img {
+  height: 40px;
+}
+
+header nav ul {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+/* Navigation Bar */
+.top-nav {
+  background-color: #737a81;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.top-nav .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+.top-nav nav {
+  display: flex;
+  gap: 20px;
+}
+.top-nav nav a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+.top-nav nav a:hover {
+  text-decoration: underline;
+}
+
+/* Container to hold all content */
+.container {
+  width: 95%;
+  max-width: 600px;
+  margin: 20px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+/* Prevent horizontal scrolling */
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Optional: Make sure main containers do not overflow */
+.container,
+.content {
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Heading style */
+h1 {
+  text-align: center;
+  color: #333;
+}
+.left-offset {
+  margin-left: 1cm; /* or use padding-left if preferred */
+}
+
+/* Form elements styles */
+select,
+input,
+button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+/* Button specific styles */
+button {
+  cursor: pointer;
+  border: none;
+}
+
+/* Custom buttons */
+.add-model-button {
+  background-color: #ffc300;
+  color: #333;
+}
+
+.remove-button {
+  background-color: #b22222;
+  color: white;
+  width: 2cm;
+  height: 1cm;
+  border: none;
+  text-align: center;
+  display: inline-block;
+}
+
+/* Cart-item style */
+.cart-item {
+  padding: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Hidden class for elements */
+.hidden {
+  display: none;
+}
+
+/* Total display style */
+.total-display {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 5px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* Subcategory container styles */
+.subcategory-container {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+/* Subcategory header styles */
+.subcategory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Button styles for proceed and send receipt */
+#proceedButton,
+#sendReceiptButton {
+  background-color: green;
+  color: white;
+  font-weight: bold;
+  margin-top: 20px;
+  display: none;
+}
+
+/* Responsive design - Media Queries */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  /* Adjust the container width */
+  .container {
+    width: 100%;
+    padding: 15px;
+  }
+
+  /* Adjust input and button width for small screens */
+  select,
+  input,
+  button {
+    width: 100%;
+    padding: 12px;
+  }
+
+  /* Make the buttons and input fields larger for ease of use on mobile */
+  .add-model-button,
+  .remove-button,
+  #proceedButton,
+  #sendReceiptButton {
+    padding: 15px;
+  }
+
+  /* Adjust table padding for small screens */
+  th,
+  td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  /* Hide the subcategory container header buttons in smaller screens */
+  .subcategory-header button {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Adjust font size for very small screens */
+  body {
+    font-size: 12px;
+  }
+
+  /* Stack buttons and inputs for small screens */
+  select,
+  input,
+  button {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .remove-button {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  /* Adjust the size of the remove button */
+  .remove-button {
+    width: 1.5cm;
+    height: 1cm;
+  }
+
+  /* Reduce the size of subcategory container */
+  .subcategory-container {
+    padding: 8px;
+  }
+  #spinner {
+    display: none;
+    border: 4px solid #422e62; /* Light gray background */
+    border-top: 4px solid #b0a316; /* Blue color for the spinner */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin: 20px auto;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+footer {
+  background-color: #004080;
+  color: white;
+  text-align: center;
+  padding: 20px 10px;
+  margin-top: 40px;
+}
+footer p {
+  margin: 5px 0;
+}
+footer a {
+  color: #00aaff;
+  text-decoration: none;
+}
+footer a:hover {
+  text-decoration: underline;
+} /* Remove button styling */
+.remove-attachment {
+  @apply text-red-600 hover:text-red-700 bg-white rounded-full p-1 transition-all;
+}
+
+/* Camera modal styling */
+.camera-modal {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+.camera-content {
+  @apply bg-white p-6 rounded-lg w-full max-w-2xl;
+}
+
+/* Reconciliation editor styling */
+.reconcile-editor {
+  @apply border rounded-lg p-4 bg-white shadow-lg;
+}
+
+.reconcile-textarea {
+  @apply w-full p-3 border rounded mb-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  min-height: 200px;
+} /* Group the buttons in a flex row with 2cm spacing */
+.button-group {
+  display: flex;
+  flex-direction: row;
+  gap: 2cm; /* this creates horizontal spacing */
+  margin-top: 1rem;
+  justify-content: center; /* optional: centers buttons horizontally */
+  flex-wrap: wrap; /* allows wrapping on small screens */
+}
+
+/* Button styling */
+#uploadButton,
+#photoButton,
+#reconcileButton {
+  background-color: #1a263e;
+  color: white;
+  width: 2cm;
+  height: 1cm;
+  border: none;
+  text-align: center;
+  display: inline-block;
+}
+
+/* Hover effect */
+#uploadButton:hover,
+#photoButton:hover,
+#reconcileButton:hover {
+  background-color: #1e40af;
+}
+
+#feedback {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+#spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

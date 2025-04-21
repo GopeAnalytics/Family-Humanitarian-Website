@@ -1,0 +1,283 @@
+/* General Styling */
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
+}
+
+/* Navigation Bar */
+.top-nav {
+  background-color: #004080;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.top-nav .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+.top-nav nav {
+  display: flex;
+  gap: 20px;
+}
+.top-nav nav a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+.top-nav nav a:hover {
+  text-decoration: underline;
+}
+
+/* Hero Section */
+.hero {
+  background-image: url("hero-banner.jpg"); /* Replace with the actual banner image */
+  background-size: cover;
+  background-position: center;
+  color: rgb(43, 39, 39);
+  text-align: center;
+  padding: 60px 20px;
+}
+.hero h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+.hero p {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+.hero .cta-btn {
+  background-color: #0077b6;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-weight: bold;
+}
+.hero .cta-btn:hover {
+  background-color: #005f8d;
+}
+
+/* Features Section */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 40px 20px;
+  background-color: white;
+}
+.feature {
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: rgb(43, 41, 41);
+}
+.feature h3 {
+  color: #004080;
+}
+.feature p {
+  color: #555;
+}
+
+/* Forex Calculator */
+.forex-calculator {
+  text-align: center;
+  padding: 30px 400px;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  background-color: #a2cbe3; /* Light cream background */
+  margin: 10px auto;
+  max-width: 600px; /* Limit size on larger screens */
+  width: 100%;
+  height: 10cm; /* Set height to 10 cm */
+}
+
+.forex-calculator h3 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #004080;
+  font-weight: bold;
+}
+.forex-calculator p {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #585543;
+}
+
+/* Flags and Dropdowns */
+.currency {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.flag {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 100%;
+  max-width: 150px;
+}
+
+.conversion-arrow {
+  font-size: 30px;
+  color: #0077b6;
+  margin: 20px 0;
+}
+
+/* Rates Section */
+.rates {
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #444;
+}
+
+/* Footer */
+footer {
+  background-color: #004080;
+  color: white;
+  text-align: center;
+  padding: 20px 10px;
+  margin-top: 40px;
+}
+footer p {
+  margin: 5px 0;
+}
+footer a {
+  color: #00aaff;
+  text-decoration: none;
+}
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .forex-calculator {
+    padding: 20px;
+    width: 100%; /* Take up more screen space on smaller devices */
+  }
+  .calculator-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .currency select {
+    max-width: 100%; /* Ensure dropdowns fit smaller screens */
+  }
+  .flag {
+    width: 40px; /* Smaller flags */
+    height: 40px;
+  }
+  .conversion-arrow {
+    font-size: 24px;
+  }
+}
+header {
+  text-align: center; /* Center-aligns the text */
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+}
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 10px;
+  padding: 10px;
+}
+
+.feature {
+  flex: 1 1 calc(30% - 20px); /* Each box takes up about 30% width with a small margin */
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  text-align: center;
+}
+
+.feature h3 {
+  margin: 0 0 10px;
+}
+
+.feature p {
+  margin: 0 0 15px;
+}
+
+@media (max-width: 768px) {
+  .feature {
+    flex: 1 1 100%; /* Each box takes up full width on smaller screens */
+  }
+
+  header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    text-align: center; /* Ensures alignment even with specific CSS resets */
+  }
+
+  header p {
+    font-size: 1.2rem;
+    margin: 5px 0 0;
+    text-align: center; /* Ensures alignment even with specific CSS resets */
+  }
+}
+/* Container for the buttons */
+.button-container {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  gap: 20px; /* Space between the buttons */
+  margin-top: 20px; /* Space above the buttons */
+}
+
+/* General button styles */
+.btn {
+  display: inline-block;
+  width: 3cm;
+  height: 1cm; /* Set height to 2cm */
+  padding: 0 30px; /* Horizontal padding */
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 5px;
+  line-height: 1cm; /* Vertically center text */
+}
+
+/* Track button (Orange) */
+.btn-track {
+  background-color: orange;
+}
+
+.btn-track:hover {
+  background-color: #ff8c00; /* Darker orange on hover */
+}
+
+/* Funds button (Green) */
+.btn-funds {
+  background-color: green;
+}
+
+.btn-funds:hover {
+  background-color: #006400; /* Darker green on hover */
+}
+.button-container {
+  display: flex;
+  gap: 1cm; /* Sets a 5 cm space between the buttons */
+}
