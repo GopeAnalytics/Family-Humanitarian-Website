@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund Request Form</title>
+    <link rel="stylesheet" href="apply-styles.css" />
+</head>
+<body><!-- Header Section -->
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="KCAU Logo">
+        </div>
+        <nav>
+            <ul>
+                
+                
+            </ul>
+        </nav>
+    </header>
+
+    <h1>Fund Request</h1>
+
+    <label for="requestType">Request Type:</label>
+    <select id="requestType">
+        <option value="New">New</option>
+        <option value="Reimbursement">Reimbursement</option>
+    </select><!-- Add the new buttons section in your container -->
+    <div id="reimbursementButtons" class="hidden">
+        <button id="uploadButton" class="action-button">Upload</button>
+        <button id="photoButton" class="action-button">Photo</button>
+        <button id="reconcileButton" class="action-button">Reconcile</button>
+    </div>
+    <div id="attachmentsContainer" class="hidden"></div>
+
+    <label for="category">Category:</label>
+    <select id="category">
+        <option value="" disabled selected>Select category</option>
+        <option value="Fuel">Fuel</option>
+        <option value="Borehole Expenses">Borehole Expenses</option>
+        <option value="Construction">Construction</option>
+        <option value="Parts/Supplies">Parts/Supplies</option>
+        <option value="Permits">Permits</option>
+        <option value="Internet/Electricity">Internet/Electricity</option>
+        <option value="Rent">Rent</option>
+        <option value="Vehicle Repair">Vehicle Repair</option>
+        <option value="Expeditions">Expeditions</option>
+        <option value="Transport">Transport</option>
+        <option value="Meals">Meals</option>
+        <option value="Accommodations">Accommodations</option>
+        <option value="Projects">Projects</option>
+        <option value="Vehicle Service">Vehicle Service</option>
+        <option value="Other">Other</option>
+    </select>
+
+    <label for="subCategory">Sub-category:</label>
+    <select id="subCategory">
+        <option value="None">None</option>
+    </select>
+    <input type="text" id="otherSubCategory" class="hidden" placeholder="Specify Other Sub-category">
+
+    <button class="add-model-button" onclick="addModel()">Add sub-category</button>
+
+    <div class="models"></div>
+    <div id="summary" class="hidden"></div>
+    <button id="proceedButton" onclick="proceed()">Proceed</button>
+    <button id="sendReceiptButton" onclick="sendAndDownloadReceipt()">Send Receipt</button>
+</div>
+<!-- Add a container for the reconciliation letter -->
+<div id="reconcileContainer"></div>
+
+<script>
+    document.getElementById('category').addEventListener('change', function () {
+        const subCategory = document.getElementById('subCategory');
+        subCategory.innerHTML = "";
+        const selectedCategory = this.value;
+        let options = ["None"];
+
+        const subCategories = {
+            "Parts/Supplies": ["Rods", "Centralizers", "Rubber", "Casings", "Drill Bits", "Mud Pumps", "Water Hoses", "Filters", "Bearings", "Grease", "Other"],
+            "Borehole Expenses": ["Drilling Permits", "Surveying", "Pump Installation", "Water Testing", "Casing Pipes", "Grouting", "Other"],
+            "Construction": ["Cement", "Sand", "Gravel", "Bricks", "Iron Sheets", "Nails", "Timber", "Other"],
+            "Vehicle Repair": ["Tires", "Battery", "Oil Change", "Brake Pads", "Suspension", "Other"]
+        };
+
+        if (subCategories[selectedCategory]) {
+            options = options.concat(subCategories[selectedCategory]);
+        } else {
+            options.push("Other");
+        }
+
+        options.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option;
+            opt.textContent = option;
+            subCategory.appendChild(opt);
+        });
+    });document.getElementById('requestType').addEventListener('change', function () {
+    const reimbursementButtons = document.getElementById('reimbursementButtons');
+    if (this.value === "Reimbursement") {
+        reimbursementButtons.classList.remove('hidden');  // Show the buttons
+    } else {
+        reimbursementButtons.classList.add('hidden');  // Hide the buttons
+    }
+});
+
+
+    document.getElementById('subCategory').addEventListener('change', function () {
+        const otherInput = document.getElementById("otherSubCategory");
+        this.value === "Other" ? otherInput.classList.remove("hidden") : otherInput.classList.add("hidden");
+    });
+
+    function addModel() {
+    const reqType = document.getElementById('requestType');
+    const category = document.getElementById('category');
+    const subCategory = document.getElementById('subCategory');
+    const otherSubCategoryInput = document.getElementById("otherSubCategory");
+
+    let selectedModel = subCategory.value;
+
+    if (selectedModel === "None") return;
+
+    if (selectedModel === "Other") {
+        selectedModel = otherSubCategoryInput.value.trim();
+        if (!selectedModel) {
+            alert("Please enter a sub-category name.");
+            return;
+        }
+    }
+
+    // Lock the dropdowns after first sub-category is added
+    reqType.disabled = true;
+    category.disabled = true;
+
+    const modelContainer = document.createElement('div');
+    modelContainer.className = 'subcategory-container';
+    modelContainer.innerHTML = `
+        <div class="subcategory-header">
+            <h2>${selectedModel}</h2>
+            <button class="remove-button" onclick="removeSubCategory(this)">Remove</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" placeholder="Description"></td>
+                    <td><input type="number" class="amount" placeholder="Amount"></td>
+                    <td><input type="number" class="quantity" placeholder="Quantity"></td>
+                </tr>
+            </tbody>
+        </table>
+    `;
+    document.querySelector('.models').appendChild(modelContainer);
+
+    // Reset and hide the "Other" input field
+    otherSubCategoryInput.value = "";
+    otherSubCategoryInput.classList.add("hidden");
+}
+document.getElementById('photoButton').addEventListener('click', function () {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        // Create camera interface container
+        const cameraContainer = document.createElement('div');
+        cameraContainer.className = 'camera-container';
+        cameraContainer.innerHTML = `
+            <h4>Take Photo</h4>
+            <div class="video-preview"></div>
+            <div class="camera-controls"></div>
+        `;
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+
+                // Create controls
+                const controls = document.createElement('div');
+                const captureButton = document.createElement('button');
+                captureButton.textContent = "Capture";
+                captureButton.className = 'action-button';
+                
+                const cancelButton = document.createElement('button');
+                cancelButton.textContent = "Cancel";
+                cancelButton.className = 'action-button';
+
+                // Add elements to DOM
+                cameraContainer.querySelector('.video-preview').appendChild(video);
+                controls.appendChild(captureButton);
+                controls.appendChild(cancelButton);
+                cameraContainer.querySelector('.camera-controls').appendChild(controls);
+                document.body.appendChild(cameraContainer);
+
+                captureButton.addEventListener('click', function () {
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    const photoDataUrl = canvas.toDataURL('image/png');
+                    
+                    // Create attachment item
+                    const attachmentItem = document.createElement('div');
+                    attachmentItem.className = 'attachment-item';
+                    attachmentItem.innerHTML = `
+                        <div class="attachment-preview">
+                            <img src="${photoDataUrl}" alt="Captured photo">
+                            <span class="remove-attachment" onclick="this.parentElement.parentElement.remove()">✕</span>
+                        </div>
+                        <input type="hidden" name="attachments[]" value="${photoDataUrl}">
+                    `;
+
+                    // Add to attachments container
+                    document.getElementById('attachmentsContainer').appendChild(attachmentItem);
+                    
+                    // Cleanup
+                    stream.getTracks().forEach(track => track.stop());
+                    cameraContainer.remove();
+                });
+
+                cancelButton.addEventListener('click', function () {
+                    stream.getTracks().forEach(track => track.stop());
+                    cameraContainer.remove();
+                });
+            })
+            .catch(function (error) {
+                console.log("Error accessing camera:", error);
+                cameraContainer.remove();
+                alert("Could not access camera. Please check permissions.");
+            });
+    } else {
+        alert("Camera functionality not supported in this browser.");
+    }
+});
+
+// Save the captured photo (could be a backend call to save it)
+function savePhoto(photoDataUrl) {
+    // Example: send the photo to a server (you can adapt this to your needs)
+    console.log("Saving photo...");
+    // Fetch request to save the photo on the server (using FormData, AJAX, etc.)
+}
+document.getElementById('uploadButton').addEventListener('click', function () {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '*/*';
+    fileInput.click();
+
+    fileInput.addEventListener('change', function () {
+        const file = fileInput.files[0];
+        if (file) {
+            const attachmentItem = document.createElement('div');
+            attachmentItem.className = 'attachment-item';
+            
+            // Create preview element
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'attachment-preview';
+            
+            // Add appropriate icon or preview
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = file.name;
+                    previewDiv.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewDiv.innerHTML = '📄'; // Document icon
+            }
+
+            // File info and remove button
+            attachmentItem.innerHTML = `
+                <div class="file-info">
+                    ${previewDiv.outerHTML}
+                    <span class="file-name">${file.name}</span>
+                </div>
+                <span class="remove-attachment" onclick="this.parentElement.remove()">✕</span>
+                <input type="hidden" name="attachments[]" value="${file.name}">
+            `;
+
+            // Add to attachments container
+            document.getElementById('attachmentsContainer').appendChild(attachmentItem);
+            saveUploadedFile(file);
+        }
+    });
+});
+document.getElementById('reconcileButton').addEventListener('click', function () {
+    // Clear previous reconciliation interface
+    const existingInterface = document.getElementById('reconcileInterface');
+    if (existingInterface) existingInterface.remove();
+
+    // Create container for reconciliation elements
+    const reconcileInterface = document.createElement('div');
+    reconcileInterface.id = 'reconcileInterface';
+    
+    // Create textarea for reconciliation letter
+    const reconcileTextArea = document.createElement('textarea');
+    reconcileTextArea.placeholder = "Write your letter of reconciliation here...";
+    reconcileTextArea.className = 'reconcile-textarea';
+    
+    // Create button container
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'reconcile-buttons';
+    
+    // Create save button
+    const saveButton = document.createElement('button');
+    saveButton.textContent = "Save Letter";
+    saveButton.className = 'action-button';
+    
+    // Create cancel button
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = "Cancel";
+    cancelButton.className = 'action-button';
+
+    // Add elements to DOM
+    reconcileInterface.appendChild(reconcileTextArea);
+    buttonContainer.appendChild(saveButton);
+    buttonContainer.appendChild(cancelButton);
+    reconcileInterface.appendChild(buttonContainer);
+    
+    // Insert below request type container
+    const requestTypeContainer = document.querySelector('#requestType').parentElement;
+    requestTypeContainer.insertAdjacentElement('afterend', reconcileInterface);
+
+    // Save handler
+    saveButton.addEventListener('click', function () {
+        const letterContent = reconcileTextArea.value.trim();
+        if (letterContent !== "") {
+            // Create attachment item
+            const attachmentItem = document.createElement('div');
+            attachmentItem.className = 'attachment-item';
+            attachmentItem.innerHTML = `
+                📝 Reconciliation Letter
+                <div class="letter-preview">${letterContent.substring(0, 50)}...</div>
+                <span class="remove-attachment" onclick="this.parentElement.remove()">✕</span>
+                <input type="hidden" name="reconciliation_letter" value="${encodeURIComponent(letterContent)}">
+            `;
+            
+            // Add to attachments container
+            document.getElementById('attachmentsContainer').appendChild(attachmentItem);
+            
+            // Cleanup
+            reconcileInterface.remove();
+        } else {
+            alert("Please write something in the letter.");
+        }
+    });
+
+    // Cancel handler
+    cancelButton.addEventListener('click', function () {
+        reconcileInterface.remove();
+    });
+});
+    function removeSubCategory(button) {
+        button.closest('.subcategory-container').remove();
+    }
+    document.getElementById("proceedButton").style.display = "block";
+    function proceed() {
+    // Get the user's locale (this will return the language/country code like 'en-US', 'en-KE', etc.)
+    const userLocale = navigator.language || 'en-US'; // Default to 'en-US' if locale is not found
+    
+    // Get the currency code based on the user's locale
+    const currencyCode = getCurrencyCode(userLocale);
+    
+    // Use the user's locale and their currency
+    const formatter = new Intl.NumberFormat(userLocale, { 
+        style: 'currency', 
+        currency: currencyCode || 'USD' // Default to 'USD' if currency code is empty
+    });
+
+    let total = 0;
+    let summaryHTML = `<h3>Summary</h3>
+        <p><strong>Request Type:</strong> ${document.getElementById("requestType").value}</p>
+        <p><strong>Category:</strong> ${document.getElementById("category").value}</p>`;
+
+    // Loop through all subcategories
+    document.querySelectorAll(".subcategory-container").forEach(box => {
+        let name = box.querySelector("h2").innerText;
+        let desc = box.querySelector("input[type='text']").value;
+        let amount = parseFloat(box.querySelector(".amount").value) || 0;
+        let qty = parseInt(box.querySelector(".quantity").value) || 1;
+        let subtotal = amount * qty;
+        total += subtotal;
+
+        // Add each item's info to the summary HTML
+        summaryHTML += `
+            <div><strong>${name}</strong><br>
+            Description: ${desc}<br>
+            Amount: ${formatter.format(amount)} x Quantity: ${qty} = ${formatter.format(subtotal)}</div><hr>`;
+    });
+
+    // Display the total
+    summaryHTML += `<p class="total-display">Total Request: ${formatter.format(total)}</p>`;
+    
+    // Show the summary and the proceed button
+    document.getElementById("summary").innerHTML = summaryHTML;
+    document.getElementById("summary").classList.remove("hidden");
+    document.getElementById("sendReceiptButton").style.display = "block";
+}
+
+// This function returns the currency code based on the user's locale
+function getCurrencyCode(locale) {
+    // Example of mapping some locales to their respective currency codes
+    const currencyMap = {
+        'en-US': 'USD',   // United States Dollar (USA)
+        'en-KE': 'KES',   // Kenyan Shilling (Kenya)
+        'en-TZ': 'TZS',   // Tanzanian Shilling (Tanzania)
+        'en-UG': 'UGX',   // Ugandan Shilling (Uganda)
+        'en-ZM': 'ZMW',   // Zambian Kwacha (Zambia)
+        'en-GH': 'GHS',   // Ghanaian Cedi (Ghana)
+        // Add more mappings as necessary
+    };
+
+    // Default to USD if locale is not recognized
+    return currencyMap[locale] || 'USD';
+}
+
+async function sendAndDownloadReceipt() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Loading the logo image asynchronously
+    const logo = new Image();
+    logo.src = "https://familyhumanitarian.org/wp-content/uploads/2020/04/logo-wide-blue.png";
+
+    await new Promise(res => {
+        logo.onload = res;  // Ensure the logo is fully loaded before proceeding
+    });
+
+    // Add the logo to the PDF
+    doc.addImage(logo, "PNG", 10, 10, 60, 20);
+    
+    // Set the font for the document title
+    doc.setFontSize(16);
+    doc.text("Family Humanitarian Expense Request", 10, 40);
+    
+    // Get the summary text content from the page
+    const summaryText = document.getElementById("summary").innerText;
+
+    // Set up y-coordinate for text placement
+    let y = 50;
+    
+    // Split the summary into lines and add each line to the PDF
+    summaryText.split("\n").forEach(line => {
+        doc.text(line, 10, y);
+        y += 7; // Adjust vertical position for the next line
+        if (y > 280) { // If we are nearing the end of the page
+            doc.addPage(); // Add a new page
+            y = 20; // Reset the y-position to the top of the new page
+        }
+    });
+
+    // Trigger the download of the PDF
+    doc.save("Expense_Request.pdf");
+}
+// Function to handle user logout
+function logoutUser() {
+// Clear user session or data (example for localStorage)
+localStorage.clear(); // Adjust based on your storage method (session, cookies, etc.)
+
+// Redirect to a login or home page
+alert("You have successfully logged out.");
+window.location.href = "sign.html"; // Redirect to the sign-in page
+}
+
+</script>
+<!-- Footer -->
+
+<footer class="main-footer">
+<p>&copy; 2025 Fh260. All rights reserved.</p>
+<p>
+    <a href="sign.html">Sign In</a> | 
+    <a href="index.html">Back Page</a> | 
+    <a href="sign.html">Sign Up</a>
+</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background-color: #003366;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      header .logo img {
+        height: 40px;
+      }
+
+      .top-nav {
+        background-color: #737a81;
+        color: white;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .top-nav nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        margin-right: 15px;
+      }
+
+      .top-nav nav a:hover {
+        text-decoration: underline;
+      }
+
+      .login-container {
+        max-width: 800px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      button {
+        padding: 0.75rem 9rem;
+        border: none;
+        background-color: #4caf50;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #errorMessage {
+        color: red;
+        text-align: center;
+      }
+
+      .dashboard {
+        padding: 20px;
+      }
+
+      #requestsContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .request-card {
+        width: 300px;
+        background-color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .request-card .name {
+        font-weight: bold;
+        color: #007bff;
+        font-size: 1.2rem;
+      }
+
+      .request-card .row {
+        margin: 0.3rem 0;
+      }
+
+      .request-card button.clear-btn {
+        width: 100%;
+        background-color: red;
+        color: white;
+        padding: 0.75rem 1rem; /* better touch area */
+        font-size: 1rem; /* readable font size */
+        margin-top: 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+      }
+
+      /* Optional: tweak for very small devices */
+      @media (max-width: 400px) {
+        .request-card button.clear-btn {
+          font-size: 0.9rem;
+          padding: 0.6rem 0.9rem;
+        }
+      }
+
+      .details {
+        background-color: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: 20px auto;
+      }
+
+      .details .btns {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-top: 10px;
+      }
+
+      .details .btns button {
+        flex: 1; /* Equal width buttons */
+        font-size: 0.9rem; /* Smaller font for phones */
+        padding: 0.5rem 0.75rem; /* Smaller padding */
+        min-width: 0; /* Prevents overflow */
+      }
+
+      /* Optional: slightly smaller for very narrow screens */
+      @media (max-width: 400px) {
+        .details .btns button {
+          font-size: 0.8rem;
+          padding: 0.4rem 0.6rem;
+        }
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #4caf50;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      #taskMessage {
+        text-align: center;
+        margin-top: 20px;
+        color: green;
+        font-weight: bold;
+      }
+
+      footer {
+        background-color: #004080;
+        color: white;
+        text-align: center;
+        padding: 20px 10px;
+        margin-top: 40px;
+      }
+
+      footer a {
+        color: #00aaff;
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 600px) {
+        .top-nav {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        #requestsContainer {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .request-card,
+        .details {
+          width: 90%;
+        }
+
+        .details .btns {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .details .btns button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
+
+      <div class="logo">
+        <img src="logo.png" alt="KCAU Logo" />
+      </div>
+    </header>
+
+    <div class="top-nav">
+      <div class="logo-text">Admin Panel</div>
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="view.html">Downloads</a>
+        <a href="receipts.html">Receipts</a>
+      </nav>
+    </div>
+
+    <div class="login-container" id="loginContainer">
+      <h2>Admin Login</h2>
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <p id="errorMessage"></p>
+    </div>
+
+    <div class="dashboard" id="dashboard" style="display: none">
+      <h2 style="text-align: center">Admin Dashboard</h2>
+      <div id="requestsContainer"></div>
+      <div id="taskMessage"></div>
+    </div>
+
+    <script>
+      const requests = [
+        {
+          name: "John Doe",
+          requestType: "Financial Aid",
+          category: "Education",
+          subCategory: "Tuition",
+          description: "Tuition fees for secondary school",
+          amount: 500,
+          quantity: 1,
+          transactionCost: 20,
+          date: "2025-04-09",
+        },
+        {
+          name: "Mary Wanjiku",
+          requestType: "Medical Support",
+          category: "Health",
+          subCategory: "Medication",
+          description: "Monthly diabetes medication",
+          amount: 75,
+          quantity: 2,
+          transactionCost: 0,
+          date: "2025-04-08",
+        },
+      ];
+
+      function login() {
+        const user = document.getElementById("username").value;
+        const pass = document.getElementById("password").value;
+        const error = document.getElementById("errorMessage");
+
+        if (user === "test" && pass === "1234") {
+          document.getElementById("loginContainer").style.display = "none";
+          document.getElementById("dashboard").style.display = "block";
+          loadRequests();
+        } else {
+          error.textContent = "Invalid username or password.";
+        }
+      }
+
+      function loadRequests() {
+        const container = document.getElementById("requestsContainer");
+        container.innerHTML = "";
+        document.getElementById("taskMessage").innerHTML = "";
+
+        requests.forEach((req, index) => {
+          const totalAmount = req.amount * req.quantity + req.transactionCost;
+
+          const card = document.createElement("div");
+          card.className = "request-card";
+
+          card.innerHTML = `
+        <div class="name">${req.name}</div>
+        <div class="row"><strong>Date:</strong> ${req.date}</div>
+        <div class="row"><strong>Total Amount:</strong> $${totalAmount}</div>
+        <div class="row"><strong>Reference:</strong> ${index + 1}</div>
+        <button class="clear-btn" onclick="showDetails(${index}, this)">Clear</button>
+      `;
+
+          container.appendChild(card);
+        });
+      }
+
+      function showDetails(index, btn) {
+        const container = document.getElementById("requestsContainer");
+        const card = btn.closest(".request-card");
+        card.remove();
+
+        const req = requests[index];
+        const total = req.amount * req.quantity + req.transactionCost;
+
+        const detailDiv = document.createElement("div");
+        detailDiv.className = "details";
+        detailDiv.setAttribute("id", `detail-${index}`);
+
+        detailDiv.innerHTML = `
+      <div><strong>Name:</strong> ${req.name}</div>
+      <div><strong>Request Type:</strong> ${req.requestType}</div>
+      <div><strong>Category:</strong> ${req.category}</div>
+      <div><strong>Sub Category:</strong> ${req.subCategory}</div>
+      <div><strong>Description:</strong> ${req.description}</div>
+      <div><strong>Amount:</strong> ${req.amount}</div>
+      <div><strong>Quantity:</strong> ${req.quantity}</div>
+      <div><strong>Transaction Cost:</strong> ${req.transactionCost}</div>
+      <div><strong>Total:</strong> $${total}</div>
+      <div class="btns">
+        <button onclick="handleAction(${index}, 'approved')">Approve</button>
+        <button style="background-color:#f44336" onclick="handleAction(${index}, 'rejected')">Reject</button>
+      </div>
+    `;
+
+        container.appendChild(detailDiv);
+      }
+
+      function handleAction(index, action) {
+        const detailDiv = document.getElementById(`detail-${index}`);
+        const btnContainer = detailDiv.querySelector(".btns");
+        btnContainer.innerHTML = `<div class="spinner"></div>`;
+
+        setTimeout(() => {
+          detailDiv.remove();
+          requests.splice(index, 1);
+          document.getElementById(
+            "taskMessage"
+          ).innerHTML = `<p>Task Completed</p>`;
+        }, 2000);
+      }
+    </script>
+
+    <footer>
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <p>
+        <a href="sign.html">Sign In</a> | <a href="index.html">Back Page</a> |
+        <a href="sign.html">Sign Up</a>
+      </p>
+    </footer>
+  </body>
+</html>

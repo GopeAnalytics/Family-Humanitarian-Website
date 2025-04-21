@@ -1,0 +1,188 @@
+/* General Styling */
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+/*Header */
+.main-header {
+  background-color: rgba(5, 5, 110, 0.8);
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-header .logo img {
+  height: 40px;
+}
+
+.main-header .main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 20px;
+}
+
+.main-header .main-nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.main-header .main-nav ul li a:hover {
+  text-decoration: underline;
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 18cm; /* Set height to 10 cm */
+  padding: 20px;
+  background-image: url("pic2.jfif");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.auth-container .form-box {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: left;
+  max-width: 400px;
+  width: 100%;
+  color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+}
+
+.auth-container h1 {
+  color: #004080;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-box h2 {
+  font-size: 1.5rem;
+  color: #004080;
+  margin-bottom: 20px;
+}
+
+.form-box label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-box input,
+.form-box select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.form-box button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  width: 100%;
+}
+
+.form-box button:hover {
+  background-color: #0056b3;
+}
+
+.form-box .message {
+  color: red;
+  font-size: 0.9rem;
+}
+
+.form-box .additional-links {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.form-box .additional-links a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 5px;
+}
+
+.form-box .additional-links a:hover {
+  text-decoration: underline;
+}
+
+.main-footer {
+  background-color: #003366;
+  color: white;
+  text-align: center;
+  padding: 20px 10px;
+  font-size: 0.9rem;
+  margin-top: 30px;
+}
+
+.main-footer a {
+  color: #ffcc00;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 5px;
+}
+
+.main-footer a:hover {
+  text-decoration: underline;
+  color: #ffd700;
+}
+
+.main-footer p {
+  margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .main-header .main-nav ul {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .auth-container .form-box {
+    max-width: 90%;
+  }
+
+  .form-box h2 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-box {
+    padding: 15px;
+  }
+
+  .form-box button {
+    font-size: 0.9rem;
+  }
+
+  .form-box input,
+  .form-box select {
+    padding: 8px;
+  }
+}

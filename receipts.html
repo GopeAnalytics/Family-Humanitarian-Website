@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Receipt Portal</title>
+    <style>
+      /* General Styles */
+      body {
+        font-family: "Arial", sans-serif;
+        background: #f4f4f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      header {
+        background: #007bff;
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+      }
+
+      header p {
+        margin: 5px 0 0;
+        font-size: 1rem;
+      }
+
+      nav {
+        background-color: #004080;
+        color: white;
+        text-align: center;
+        padding: 10px 0;
+      }
+
+      nav a {
+        color: white;
+        font-size: 1rem;
+        margin: 0 15px;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      nav a:hover {
+        text-decoration: underline;
+      }
+
+      main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      #results-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+      }
+
+      .container {
+        background: white;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 300px;
+        flex: 1 1 300px;
+        position: relative;
+      }
+
+      .container h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: #007bff;
+      }
+
+      .container p {
+        margin: 5px 0;
+        font-size: 0.9rem;
+      }
+
+      .clear-btn {
+        display: block;
+        margin: 10px 0;
+        padding: 10px;
+        font-size: 0.9rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 8cm;
+        height: 1cm;
+        background: red;
+        color: white;
+      }
+
+      .extra-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        gap: 10px;
+        display: none; /* Hidden initially */
+      }
+
+      .extra-buttons button {
+        width: 2cm;
+        height: 1cm;
+        padding: 5px;
+        font-size: 0.9rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .photo-btn {
+        background: blue;
+        color: white;
+      }
+
+      .upload-btn {
+        background: green;
+        color: white;
+      }
+
+      .reconcile-btn {
+        background: orange;
+        color: white;
+      }
+
+      .submit-btn {
+        background: yellow;
+        color: black;
+        display: none;
+        margin-top: 10px;
+        padding: 10px;
+        font-size: 0.9rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 8cm;
+        height: 1cm;
+      }
+
+      .reconcile-area {
+        display: none;
+        margin-top: 10px;
+        width: 100%;
+      }
+
+      footer {
+        background-color: #003366;
+        color: white;
+        text-align: center;
+        padding: 20px 10px;
+        margin-top: auto;
+      }
+
+      footer a {
+        color: #ffcc00;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+      #name-dropdown {
+        height: 1cm; /* Set the height to 2 cm */
+        font-size: 16px; /* Adjust the font size */
+        padding: 5px; /* Add some padding for better appearance */
+        border: 2px solid #333; /* Optional border styling */
+        border-radius: 5px; /* Optional rounded corners */
+      }
+      .receipt-input {
+        display: none;
+        width: 100%;
+        margin-top: 10px;
+        height: 1cm; /* Set the height to 1 cm */
+        font-size: 16px; /* Adjust font size for better readability */
+        padding: 5px; /* Add padding for better appearance */
+        border: 2px solid #333; /* Optional border styling */
+        border-radius: 5px; /* Optional rounded corners */
+        box-sizing: border-box; /* Include padding and border in height */
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Receipt Portal</h1>
+      <p>Select your name and view your balances and transactions.</p>
+    </header>
+    <nav>
+      <a href="home.html">Home</a>
+      <a href="apply.html">Apply</a>
+    </nav>
+    <main>
+      <p>
+        These are the expenses on your name that await receipts. Please click on
+        each to upload.
+      </p>
+      <section id="filter-section">
+        <label for="name-dropdown">Select Name:</label>
+        <select id="name-dropdown">
+          <option value="" disabled selected>Select a name</option>
+        </select>
+      </section>
+      <section id="results-section">
+        <!-- Data containers will be dynamically added here -->
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <p>
+        <a href="sign.html">Sign In</a> | <a href="index.html">Back Page</a> |
+        <a href="#" onclick="logoutUser()">Log Out</a>
+      </p>
+    </footer>
+    <script>
+      const API_URL =
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vTGUVHqadLXkMMMYTqveJozm3pUww5PLoYXvs0Dcm8U3AuZOsqqCqmCmVXkeSeZ82FQ7ARHPhLW-dWo/pub?gid=1643271877&output=csv";
+      const nameDropdown = document.getElementById("name-dropdown");
+      const resultsSection = document.getElementById("results-section");
+
+      async function fetchData() {
+        const response = await fetch(API_URL);
+        const textData = await response.text();
+        const rows = textData
+          .split("\n")
+          .slice(1)
+          .map((row) => row.split(","));
+        const data = rows.map((row) => ({
+          Date: row[0]?.trim(),
+          Name: row[1]?.trim(),
+          TotalAmount: row[2]?.trim(),
+          Reference: row[3]?.trim(),
+        }));
+
+        populateDropdown(data);
+        setupDropdownListener(data);
+      }
+
+      function populateDropdown(data) {
+        const uniqueNames = [...new Set(data.map((item) => item.Name))];
+        uniqueNames.forEach((name) => {
+          if (name) {
+            const option = document.createElement("option");
+            option.value = name;
+            option.textContent = name;
+            nameDropdown.appendChild(option);
+          }
+        });
+      }
+
+      function setupDropdownListener(data) {
+        nameDropdown.addEventListener("change", () => {
+          const selectedName = nameDropdown.value;
+          resultsSection.innerHTML = "";
+
+          const filteredData = data.filter((row) => row.Name === selectedName);
+
+          filteredData.forEach((row) => {
+            const container = document.createElement("div");
+            container.classList.add("container");
+
+            container.innerHTML = `
+                        <h3>${row.Name}</h3>
+                        <p><strong>Date:</strong> ${row.Date}</p>
+                        <p><strong>Total Amount:</strong> ${row.TotalAmount}</p>
+                        <p><strong>Reference:</strong> ${row.Reference}</p>
+                        <button class="clear-btn">Clear</button>
+                        <div class="extra-buttons" style="display: none;">
+                            <button class="photo-btn">Add Photo</button>
+                            <button class="upload-btn">Upload File</button>
+                            <button class="reconcile-btn">Reconcile</button>
+                        </div>
+                        <input type="number" class="receipt-input" placeholder="Enter receipt amount" style="display: none; width: 100%; margin-top: 10px;">
+                        <textarea class="reconcile-area" rows="4" cols="30" style="display: none;" placeholder="Enter reconciliation details (optional)"></textarea>
+                        <p class="file-display" style="display: none; font-size: 0.9rem; color: green;"></p>
+                        <button class="submit-btn" style="display: none;">Submit to Clear</button>
+                    `;
+
+            const clearBtn = container.querySelector(".clear-btn");
+            const extraButtons = container.querySelector(".extra-buttons");
+            const photoBtn = container.querySelector(".photo-btn");
+            const uploadBtn = container.querySelector(".upload-btn");
+            const reconcileBtn = container.querySelector(".reconcile-btn");
+            const receiptInput = container.querySelector(".receipt-input");
+            const reconcileArea = container.querySelector(".reconcile-area");
+            const fileDisplay = container.querySelector(".file-display");
+            const submitBtn = container.querySelector(".submit-btn");
+
+            clearBtn.addEventListener("click", () => {
+              clearBtn.style.display = "none";
+              extraButtons.style.display = "flex";
+              receiptInput.style.display = "block";
+              submitBtn.style.display = "block";
+            });
+
+            photoBtn.addEventListener("click", () => {
+              const input = document.createElement("input");
+              input.type = "file";
+              input.accept = "image/*";
+              input.capture = "camera";
+              input.style.display = "none"; // Hide the input element
+              document.body.appendChild(input);
+              input.click();
+
+              input.addEventListener("change", () => {
+                if (input.files.length > 0) {
+                  const fileParagraph = document.createElement("p");
+                  fileParagraph.textContent = `Photo Added: ${input.files[0].name}`;
+                  fileParagraph.style.cssText = `
+                font-size: 0.9rem;
+                color: green;
+                margin-top: 5px;
+            `;
+                  container.appendChild(fileParagraph);
+                }
+                document.body.removeChild(input);
+              });
+            });
+
+            uploadBtn.addEventListener("click", () => {
+              const input = document.createElement("input");
+              input.type = "file";
+              input.style.display = "none"; // Hide the input element
+              document.body.appendChild(input);
+              input.click();
+
+              input.addEventListener("change", () => {
+                if (input.files.length > 0) {
+                  const fileParagraph = document.createElement("p");
+                  fileParagraph.textContent = `File Uploaded: ${input.files[0].name}`;
+                  fileParagraph.style.cssText = `
+                font-size: 0.9rem;
+                color: green;
+                margin-top: 5px;
+            `;
+                  container.appendChild(fileParagraph);
+                }
+                document.body.removeChild(input);
+              });
+            });
+
+            reconcileBtn.addEventListener("click", () => {
+              reconcileArea.style.display = "block";
+            });
+
+            submitBtn.addEventListener("click", () => {
+              const receiptValue = receiptInput.value.trim();
+
+              let errorMessage = container.querySelector(".error-message");
+              if (errorMessage) {
+                errorMessage.remove();
+              }
+
+              if (
+                receiptValue === "" ||
+                isNaN(receiptValue) ||
+                receiptValue <= 0
+              ) {
+                errorMessage = document.createElement("p");
+                errorMessage.className = "error-message";
+                errorMessage.innerText = "Please enter a valid receipt amount.";
+                errorMessage.style.cssText = `
+                                color: red;
+                                font-size: 0.9rem;
+                                margin-top: 10px;
+                            `;
+                container.appendChild(errorMessage);
+                return;
+              }
+
+              container.innerHTML = `<p>Task completed and cleared.</p>`;
+            });
+
+            resultsSection.appendChild(container);
+          });
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const userName = sessionStorage.getItem("currentUser");
+        const userInitials = sessionStorage.getItem("userInitials");
+
+        if (!userName) {
+          alert("You must log in first.");
+          window.location.href = "sign.html";
+        } else {
+          const userCircle = document.createElement("div");
+          userCircle.textContent = userInitials;
+          userCircle.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    width: 40px;
+                    height: 40px;
+                    background: blue;
+                    color: black;
+                    font-weight: bold;
+                    border-radius: 50%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                `;
+          document.body.appendChild(userCircle);
+        }
+      });
+
+      fetchData();
+
+      function logoutUser() {
+        sessionStorage.clear();
+        alert("You have successfully logged out.");
+        window.location.href = "sign.html";
+      }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  </body>
+</html>
