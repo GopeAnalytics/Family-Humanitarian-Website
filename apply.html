@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fund Request Form</title>
     <link rel="stylesheet" href="apply-styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body><!-- Header Section -->
     <header>
@@ -115,6 +117,24 @@
 <div id="reconcileContainer"></div>
 
 <script>
+  function getBase64Image(imgUrl, callback) {
+    const img = new Image();
+    img.onload = function() {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        const dataURL = canvas.toDataURL("image/png");
+        callback(dataURL);
+    };
+    img.src = imgUrl;
+}
+
+// Usage:
+getBase64Image("logo.png", function(base64) {
+    console.log(base64); // Copy this value for your logoBase64 variable
+});
     // Handle category change and populate sub-categories
     document.getElementById('category').addEventListener('change', function () {
         const subCategory = document.getElementById('subCategory');
@@ -335,41 +355,38 @@ function createFileAttachment(fileName, driveLink, type) {
                   const photoDataUrl = canvas.toDataURL("image/png");
 
                   // Create attachment item
-                  canvas.toBlob(async (blob) => {
-    try {
-  const arrayBuffer = await blob.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  
-  const formData = new FormData();
-  formData.append("attachment", new Blob([buffer]), `photo_${Date.now()}.png`);
+canvas.toBlob(async (blob) => {
+  try {
+    const formData = new FormData();
+    formData.append("attachment", blob, `photo_${Date.now()}.png`);
 
-      const response = await fetch("http://localhost:3000/api/upload", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`
-        },
-        body: formData
-      });
+    const response = await fetch("http://localhost:3000/api/upload", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      },
+      body: formData
+    });
 
-      const data = await response.json();
-      
-      if (response.ok) {
-        const attachmentItem = document.createElement("div");
-        attachmentItem.className = "attachment-item";
-        attachmentItem.innerHTML = `
-          <img src="${data.driveLink}" class="w-32 h-32 object-cover rounded">
-          <input type="hidden" name="attachments[]" 
-                 data-type="photo" 
-                 data-filename="photo_${Date.now()}.png" 
-                 value="${data.driveLink}">
-        `;
-        document.getElementById("attachmentsContainer").appendChild(attachmentItem);
-      }
-    } catch (error) {
-      console.error("Photo upload failed:", error);
-      alert("Photo upload failed");
+    const data = await response.json();
+    
+    if (response.ok) {
+      const attachmentItem = document.createElement("div");
+      attachmentItem.className = "attachment-item";
+      attachmentItem.innerHTML = `
+        <img src="${data.driveLink}" class="w-32 h-32 object-cover rounded">
+        <input type="hidden" name="attachments[]" 
+               data-type="photo" 
+               data-filename="photo_${Date.now()}.png" 
+               value="${data.driveLink}">
+      `;
+      document.getElementById("attachmentsContainer").appendChild(attachmentItem);
     }
-  }, "image/png");
+  } catch (error) {
+    console.error("Photo upload failed:", error);
+    alert("Photo upload failed");
+  }
+}, "image/png");
                   // Cleanup
                   stream.getTracks().forEach((track) => track.stop());
                   modal.remove();
@@ -432,11 +449,8 @@ editor.querySelector(".save-btn").addEventListener("click", async function () {
 
   try {
     const blob = new Blob([letterContent], { type: "text/plain" });
-    const arrayBuffer = await blob.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
     const formData = new FormData();
-    formData.append("attachment", new Blob([buffer]), `reconciliation_${Date.now()}.txt`);
+    formData.append("attachment", blob, `reconciliation_${Date.now()}.txt`);
 
     const response = await fetch("http://localhost:3000/api/upload", {
       method: "POST",
@@ -595,30 +609,33 @@ function getCurrencyCode(locale) {
             quantity: parseInt(inputs[2].value)
         });
     });
+    
     if (formData.expenseItems.length === 0) {
-    alert("Please add at least one expense item");
-    return;
-  }
+        alert("Please add at least one expense item");
+        return;
+    }
+    
     // Calculate totals
     const totalAmount = formData.expenseItems.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
     const totalRequest = totalAmount + formData.transactionCost;
-      // Process attachments
-formData.attachments = [];
-const attachmentPromises = [];
+    
+    // Process attachments
+    formData.attachments = [];
+    
+    document.querySelectorAll('[name="attachments[]"]').forEach(input => {
+        if (input.value) {
+            const type = input.dataset.type;
+            const fileName = input.dataset.filename;
+            const content = input.value;
 
-document.querySelectorAll('[name="attachments[]"]').forEach(input => {
-  if (input.value) {
-    const type = input.dataset.type;
-    const fileName = input.dataset.filename;
-    const content = input.value;
-
-    formData.attachments.push({
-      type: type,
-      fileName: fileName,
-      content: content
+            formData.attachments.push({
+                type: type,
+                fileName: fileName,
+                content: content
+            });
+        }
     });
-  }
-});
+    
     // Send to backend
     fetch('http://localhost:3000/api/requests', {
         method: 'POST',
@@ -627,30 +644,29 @@ document.querySelectorAll('[name="attachments[]"]').forEach(input => {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-      requestType: formData.requestType,
-      category: formData.category,
-      subCategory: formData.subCategory,
-      expenseItems: formData.expenseItems,
-      transactionCost: formData.transactionCost,
-      attachments: formData.attachments
+            requestType: formData.requestType,
+            category: formData.category,
+            subCategory: formData.subCategory,
+            expenseItems: formData.expenseItems,
+            transactionCost: formData.transactionCost,
+            attachments: formData.attachments
+        })
     })
-  })
-  .then(response => {
+    .then(response => {
         if (!response.ok) throw new Error('Request failed');
         return response.json();
     })
     .then(data => {
-        // Generate receipt
-        const user = JSON.parse(localStorage.getItem('user')); // Assuming user data is stored on login
-        const receiptContent = generateReceiptContent(user, formData, totalAmount, totalRequest);
-        downloadReceipt(receiptContent);
+        // Generate and download PDF form
+        const receiptContent = generateReceiptContent(formData, totalAmount, totalRequest);
+        downloadReceipt(receiptContent, formData, totalAmount, totalRequest);
         
         feedback.style.color = "green";
         feedback.innerText = "Request successfully sent!";
     })
     .catch(error => {
-      console.error('Submission Error:', error);
-      alert(`Submission Failed: ${error.message}`);
+        console.error('Submission Error:', error);
+        alert(`Submission Failed: ${error.message}`);
         feedback.style.color = "red";
         feedback.innerText = "Request failed. Please try again.";
     })
@@ -659,8 +675,8 @@ document.querySelectorAll('[name="attachments[]"]').forEach(input => {
         sendBtn.style.display = "block";
         feedback.style.display = "block";
         
-        // Refresh after 5 seconds
-        setTimeout(() => location.reload(), 300000);
+        // Refresh after 30 seconds (you might want to increase this)
+        setTimeout(() => location.reload(), 30000);
     });
 }
 
@@ -697,14 +713,116 @@ function generateReceiptContent(user, formData, totalAmount, totalRequest) {
     `;
 }
 
-function downloadReceipt(content) {
-    const blob = new Blob([content], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `fund_request_${Date.now()}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+function downloadReceipt(content, formData, totalAmount, totalRequest) {
+    // Create a new jsPDF instance
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Add logo at the top (assuming you have the logo in base64 format)
+    // You'll need to replace this with your actual logo
+    const logoImg = new Image();
+    logoImg.src = 'logo.png'; // Update with your logo path
+    
+    // Function to proceed once logo is loaded
+    logoImg.onload = function() {
+        // Add logo
+        doc.addImage(logoImg, 'PNG', 15, 10, 30, 30);
+        
+        // Add title
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text('FUND REQUEST FORM', 105, 20, { align: 'center' });
+        
+        // Add date
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Date: ${new Date().toLocaleDateString()}`, 195, 20, { align: 'right' });
+        
+        // Add user information
+        const user = JSON.parse(localStorage.getItem('user'));
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text('User Information:', 15, 50);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Name: ${user.name}`, 15, 60);
+        doc.text(`Email: ${user.email}`, 15, 70);
+        doc.text(`Country: ${user.country}`, 15, 80);
+        
+        // Add request details
+        doc.setFont('helvetica', 'bold');
+        doc.text('Request Details:', 15, 100);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Type: ${formData.requestType}`, 15, 110);
+        doc.text(`Category: ${formData.category}`, 15, 120);
+        doc.text(`Sub-category: ${formData.subCategory}`, 15, 130);
+        
+        // Add expense items table
+        doc.setFont('helvetica', 'bold');
+        doc.text('Expense Items:', 15, 150);
+        
+        // Table headers and data
+        const headers = [['Description', 'Amount', 'Quantity', 'Subtotal']];
+        const data = formData.expenseItems.map(item => [
+            item.description,
+            item.amount.toFixed(2),
+            item.quantity,
+            (item.amount * item.quantity).toFixed(2)
+        ]);
+        
+        // Generate table
+        doc.autoTable({
+            startY: 155,
+            head: headers,
+            body: data,
+            theme: 'grid',
+            headStyles: { fillColor: [66, 133, 244] }
+        });
+        
+        // Add totals
+        const finalY = doc.previousAutoTable.finalY + 10;
+        doc.text('Transaction Cost:', 130, finalY);
+        doc.text(`${formData.transactionCost.toFixed(2)}`, 180, finalY, { align: 'right' });
+        
+        doc.text('Total Amount:', 130, finalY + 10);
+        doc.text(`${totalAmount.toFixed(2)}`, 180, finalY + 10, { align: 'right' });
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text('Total Request:', 130, finalY + 20);
+        doc.text(`${totalRequest.toFixed(2)}`, 180, finalY + 20, { align: 'right' });
+        
+        // Add signature fields
+        doc.setFont('helvetica', 'bold');
+        doc.text('Approvals:', 15, finalY + 40);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.text('Colleague Approval:', 15, finalY + 50);
+        doc.line(15, finalY + 60, 100, finalY + 60);
+        doc.text('Date:', 110, finalY + 50);
+        doc.line(110, finalY + 60, 180, finalY + 60);
+        
+        doc.text('Boss Approval:', 15, finalY + 80);
+        doc.line(15, finalY + 90, 100, finalY + 90);
+        doc.text('Date:', 110, finalY + 80);
+        doc.line(110, finalY + 90, 180, finalY + 90);
+        
+        // Add footer
+        doc.setFontSize(8);
+        doc.text('Form generated by KCAU Funds Management System', 105, 285, { align: 'center' });
+        
+        // Save the PDF
+        doc.save(`fund_request_form_${Date.now()}.pdf`);
+    };
+    
+    // Handle logo loading error
+    logoImg.onerror = function() {
+        console.error('Failed to load logo, generating PDF without logo');
+        // Just proceed without the logo
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text('FUND REQUEST FORM', 105, 20, { align: 'center' });
+        // Rest of PDF generation code follows...
+        doc.save(`fund_request_form_${Date.now()}.pdf`);
+    };
 }
 </script>
 <!-- Footer -->
